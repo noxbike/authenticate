@@ -1,8 +1,11 @@
 import './App.css';
-import Form from './component/Form';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
+import Routes from './routes/index'
+import SignIn from './component/SignIn';
+import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+import SignUp from './component/SignUp';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     type: 'dark',
   },
@@ -12,13 +15,12 @@ function App() {
   return (
     <div className="App">
       <MuiThemeProvider theme={theme}>
-        <img src='./image/compagnie_logo.png' alt='logo_compagnie' width="200"/>
-        <Form/>
-        <div className='login_link'>
-          <a href='www.google.com'><small>Forgot password</small></a>
-          <a href='www.google.com'><small>Don't have an account? Sign Up</small></a>
+        <div id="view">
+          <SignUp/>
         </div>
-        <small>Copyright © noxbike 2021</small>
+        <footer>
+          <small className='copyright'>Copyright © noxbike 2021</small>
+        </footer>
       </MuiThemeProvider>
     </div>
   );

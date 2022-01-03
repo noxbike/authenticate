@@ -7,25 +7,29 @@ const serveur = "http://localhost:3000";
 const useStyles = makeStyles((theme) => ({
     root: {
         '& > *': {
-            margin: theme.spacing(2),
+            margin: theme.spacing(1.2),
             width:'38ch',
         },
     },
 }));
 
-export default function Form() {
+export default function SignIn() {
     const [remember, setRemember] = useState(false);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [error, setError] = useState({email: false, password: false, check: null});
+    const [error, setError] = useState({email: false, password: false});
     const classes = useStyles();
 
-    const LoginUser = () => {
+    const LoginUser = (e) => {
+        e.preventDefault();
+        let error = {email: false, password: false};
         if(!email || !password){
-            let error = {email: false, password: false};
             error.email = !email ? true : false;
             error.password = !password ? true : false;
             return setError(error);
+        }
+        else{
+            setError(error)
         }
 
         axios.post(`${serveur}/login`, {
@@ -51,11 +55,16 @@ export default function Form() {
     }
 
     return (
-        <form className={classes.root + " login_form"} noValidate autoComplete='off' onSubmit={() => LoginUser()}>
+        <form className={classes.root + " login_form"} noValidate autoComplete='off' onSubmit={(e) => LoginUser(e)}>
+            
+            <div>
+                <img src='./image/compagnie_logo.png' alt='logo_compagnie' width={200}/>
+            </div>
 
             {error.check && <Alert variant="outlined" severity="warning">
                 {error.check}
             </Alert>}
+
             <TextField 
                 error= {error.email ? true : false}
                 helperText={error.email ? "Please enter your email." : null}
@@ -88,10 +97,18 @@ export default function Form() {
                 onClick={() => setRemember(!remember)}
             />
 
-            <Button type="submit" variant="contained" color="primary" disableElevation>
+            <Button 
+                type="submit"
+                variant="contained"
+                color="primary"
+                disableElevation
+            >
                 Login
             </Button>
-
+            <div className='login_link'>
+                <a href='www.google.com'><small>Forgot password</small></a>
+                <a href='www.google.com'><small>Don't have an account? Sign Up</small></a>
+            </div>
         </form>
     )
 }
