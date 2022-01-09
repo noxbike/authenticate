@@ -49,7 +49,7 @@ export default function SignUp () {
     }
 
     return(
-        <form className={useStyles().root + " signup_form"} noValidate autoComplete='off' onSubmit={(e) => SignUpUser(e)}>
+        <form className={classes.root + " signup_form"} noValidate autoComplete='off' onSubmit={(e) => SignUpUser(e)}>
             <div>
                 <img src='./image/compagnie_logo.png' alt='logo_compagnie' width={200}/>
             </div>
@@ -90,7 +90,7 @@ export default function SignUp () {
                 placeholder='Enter again your password'
                 type='password'
                 variant="outlined"
-                onChange={(e) => setPasswordCheck(password == e.target.value ? false : true)}
+                onChange={(e) => setPasswordCheck(password === e.target.value ? false : true)}
             />
             <Button 
                 type="submit"
