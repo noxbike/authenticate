@@ -1,10 +1,14 @@
+import React, { useState } from 'react'
 import './App.css';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
-import Routes from './routes/index'
+import { Route, Routes } from 'react-router-dom'
 import SignIn from './component/SignIn';
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import SignUp from './component/SignUp';
 import Dashboard from './component/Dashboard';
+import ProtectedRoute from './routes/ProtectedRoute';
+import PageNotFound from './component/PageNotFound';
+import LogoutRoute from './routes/LogoutRoute';
+import Pages from './routes/index';
 
 const theme = createTheme({
   palette: {
@@ -13,12 +17,24 @@ const theme = createTheme({
 });
 
 function App() {
+
   return (
     <div className="App">
       <MuiThemeProvider theme={theme}>
-        <div id="view">
-          <Dashboard/>
-        </div>
+        <Routes id="view">
+
+          <Route element={<LogoutRoute />}>
+            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/SignUp" element={<SignUp />} />
+          </Route>
+
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/" element={<Dashboard />} />
+          </Route>
+
+          <Route path="*" element={<PageNotFound />} />
+
+        </Routes>
         <footer>
           <small className='copyright'>Copyright © noxbike 2021</small>
         </footer>

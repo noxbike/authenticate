@@ -1,4 +1,5 @@
 import React, { useState} from 'react'
+import { Link } from 'react-router-dom'
 import { TextField, Checkbox, Button, FormControlLabel, makeStyles } from '@material-ui/core/';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
@@ -106,8 +107,8 @@ export default function SignIn() {
                 Login
             </Button>
             <div className='login_link'>
-                <a href='www.google.com'><small>Forgot password</small></a>
-                <a href='www.google.com'><small>Don't have an account? Sign Up</small></a>
+                <Link to="/ForgotPassword"><small>Forgot password</small></Link>
+                <Link to='/SignUp'><small>Don't have an account? Sign Up</small></Link>
             </div>
         </form>
     )
