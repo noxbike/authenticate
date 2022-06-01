@@ -1,2 +1,2 @@
-# authenticate
+# authentification
 Authentification of the user with session
