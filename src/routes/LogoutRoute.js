@@ -1,9 +1,10 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom';
-import IsAuth from '../component/IsAuth';
+import { useSelector } from 'react-redux';
 
 const LogoutRoute = () => {
-    return !IsAuth ? <Outlet /> : <Navigate to="/"/>;
+    const user = useSelector(state => state.user.value);
+    return !user ? <Outlet /> : <Navigate to="/"/>;
 }
 
 export default LogoutRoute;

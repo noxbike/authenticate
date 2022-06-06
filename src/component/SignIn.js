@@ -1,9 +1,11 @@
-import React, { useState} from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, Navigate } from 'react-router-dom'
 import { TextField, Checkbox, Button, FormControlLabel, makeStyles } from '@material-ui/core/';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../feature/user/logUser'
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
-const serveur = "http://localhost:3000";
+const serveur = "http://localhost:3001/api";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,100 +18,99 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
     const [remember, setRemember] = useState(false);
-    const [email, setEmail] = useState(null);
+    const [email, setEmail]       = useState(null);
     const [password, setPassword] = useState(null);
-    const [error, setError] = useState({email: false, password: false});
-    const classes = useStyles();
-
+    const [error, setError]       = useState({email: false, password: false});
+    const classes                 = useStyles();
+    const user = useSelector(state => state.user.value)
+    const dispatch = useDispatch()
+    axios.defaults.withCredentials = true;
+    
     const LoginUser = (e) => {
         e.preventDefault();
-        let error = {email: false, password: false};
+
         if(!email || !password){
-            error.email = !email ? true : false;
-            error.password = !password ? true : false;
-            return setError(error);
-        }
-        else{
-            setError(error)
+            return setError({
+                email: !email ? true : false,
+                password: !password ? true : false
+            })
         }
 
         axios.post(`${serveur}/login`, {
-            'email': email,
-            'password': password,
-            'remember': remember,
+            email,
+            password,
+            remember
         })
-        .then(function(response){
-            if(response.data.success){
-                alert(response.data.success)
-            }
-            else if(response.data.error){
-                setError({email: false, password: false, check: response.data.error})
-            }
-            else{
-                setError({email: false, password: false, check: response.data.err})
-            }
-            
+        .then( res => {
+            dispatch(login(res.data.msg));
         })
-        .catch(function(error){
-            console.log(error);
+        .catch( err => {
+            setError({email: false, password: false, check: "Email or Password incorrect !"})
         })
     }
 
-    return (
-        <form className={classes.root + " login_form"} noValidate autoComplete='off' onSubmit={(e) => LoginUser(e)}>
-            
-            <div>
-                <img src='./image/compagnie_logo.png' alt='logo_compagnie' width={200}/>
-            </div>
+    if(user) {
+        return (
+            <Navigate to='/'/>
+        )
+    }
+    else{
+        return (
+            <form className={classes.root + " login_form"} noValidate autoComplete='off' onSubmit={(e) => LoginUser(e)}>
 
-            {error.check && <Alert variant="outlined" severity="warning">
-                {error.check}
-            </Alert>}
+                <div>
+                    <img src='./image/compagnie_logo.png' alt='logo_compagnie' width={200}/>
+                </div>
 
-            <TextField 
-                error= {error.email ? true : false}
-                helperText={error.email ? "Please enter your email." : null}
-                id="outlined-basic"
-                label="Email"
-                variant="outlined"
-                type='text' 
-                name='Email'
-                placeholder='Enter your email'
-                onChange={(e) => setEmail(e.target.value)}
-            />
+                {error.check && <Alert variant="outlined" severity="warning">
+                    {error.check}
+                </Alert>}
 
-            <TextField 
-                error={error.password ? true : false}
-                helperText={error.password ? "Please enter your password." : null}
-                id="outlined-basic"
-                label="password"
-                variant="outlined"
-                type='password'
-                name='password'
-                placeholder='Enter your password'
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <TextField 
+                    error= {error.email ? true : false}
+                    helperText={error.email ? "Please enter your email." : null}
+                    id="outlined-basic"
+                    label="Email"
+                    variant="outlined"
+                    type='text' 
+                    name='Email'
+                    placeholder='Enter your email'
+                    onChange={(e) => setEmail(e.target.value)}
+                />
 
-            <FormControlLabel
-                value="end"
-                control={<Checkbox color="primary" />}
-                label="Remember me"
-                labelPlacement="end"
-                onClick={() => setRemember(!remember)}
-            />
+                <TextField 
+                    error={error.password ? true : false}
+                    helperText={error.password ? "Please enter your password." : null}
+                    id="outlined-basic"
+                    label="password"
+                    variant="outlined"
+                    type='password'
+                    name='password'
+                    placeholder='Enter your password'
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-            <Button 
-                type="submit"
-                variant="contained"
-                color="primary"
-                disableElevation
-            >
-                Login
-            </Button>
-            <div className='login_link'>
-                <Link to="/ForgotPassword"><small>Forgot password</small></Link>
-                <Link to='/SignUp'><small>Don't have an account? Sign Up</small></Link>
-            </div>
-        </form>
-    )
+                <FormControlLabel
+                    value="end"
+                    control={<Checkbox color="primary" />}
+                    label="Remember me"
+                    labelPlacement="end"
+                    onClick={() => setRemember(!remember)}
+                />
+
+                <Button 
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                >
+                    Login
+                </Button>
+                <div className='login_link'>
+                    <Link to="/ForgotPassword"><small>Forgot password</small></Link>
+                    <Link to='/SignUp'><small>Don't have an account? Sign Up</small></Link>
+                </div>
+            </form>
+        )
+    }
 }

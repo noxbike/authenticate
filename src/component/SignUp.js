@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, makeStyles } from '@material-ui/core';
 import axios from 'axios';
 const emailValidate = /\S+@\S+\.\S+/;
-const server = 'http://localhost:3000';
+const server = 'http://localhost:3001/api';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -14,37 +14,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp () {
-    const [userName, setUserName] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [error, setError] = useState({username: false, email:false, password: false})
+    const [username, setUserName]           = useState(null);
+    const [password, setPassword]           = useState(null);
+    const [email, setEmail]                 = useState(null);
+    const [error, setError]                 = useState({username: false, email:false, password: false})
     const [passwordCheck, setPasswordCheck] = useState(null);
-    const classes = useStyles();
+    const classes                           = useStyles();
 
     const SignUpUser = (e) => {
         e.preventDefault();
         setError({username: false, email: false, password:false});
-        if(!userName || !email || !password || passwordCheck ){
-            let error = {username: false, email: false, password:false};
-            error.username = !userName ? true : false;
-            error.email = !email ? true : false;
-            error.password = !password ? true : false;
-            return setError(error);
+        if(!username || !email || !password || passwordCheck ){
+            return setError({
+                username: !username ? true : false, 
+                email: !email ? true : false, 
+                password:!password ? true : false
+            })
         }
         if(!emailValidate.test(email)){
             alert('Votre email est invalide')
         }
 
-        axios.post(`${server}/SignUp`,{
-            'username': userName,
-            'password': password,
-            'email': email
+        axios.post(`${server}/register`,{
+            username,
+            password,
+            email
         })
-        .then(function(response){
-            console.log(response)
+        .then(response => {
+            alert(response.data.succ)
         })
-        .catch(function(error){
-            console.log(error)
+        .catch(err => {
+            alert(err)
         })
     }
 
